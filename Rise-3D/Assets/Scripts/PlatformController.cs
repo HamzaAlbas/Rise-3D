@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class PlatformController : MonoBehaviour
 {
-    [SerializeField] private float platformSpeed = 2f;
+    [SerializeField] private float platformSpeed = 1f;
 
     private void Update()
     {
