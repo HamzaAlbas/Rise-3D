@@ -4,15 +4,13 @@ using UnityEngine;
 
 public class PlatformSpawner : MonoBehaviour
 {
+    public float timeBetweenWaves = 1f;
     [SerializeField] private GameObject platformPrefab;
     public RectTransform[] objects;
 
     private void Start()
     {
-        StartCoroutine(CubeSpawnCoroutine());
-
-
-        
+        StartCoroutine(CubeSpawnCoroutine()); 
     }
 
     IEnumerator CubeSpawnCoroutine()
@@ -20,7 +18,7 @@ public class PlatformSpawner : MonoBehaviour
         while (true)
         {
             SpawnCube();
-            yield return new WaitForSeconds(3f);
+            yield return new WaitForSeconds(timeBetweenWaves);
         }
     }
 
