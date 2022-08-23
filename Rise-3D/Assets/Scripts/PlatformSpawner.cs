@@ -33,7 +33,7 @@ public class PlatformSpawner : MonoBehaviour
                 Vector3 spawnPos = Camera.main.ViewportToWorldPoint(objects[i].position);
                 Vector3 lastPos = Camera.main.WorldToViewportPoint(spawnPos);
 
-                Instantiate(platformPrefab, new Vector3(lastPos.x, lastPos.y, 0), Quaternion.identity);
+                Instantiate(platformPrefab, new Vector3(lastPos.x, lastPos.y + 1.5f, 0), Quaternion.identity);
             }
         }
     }
