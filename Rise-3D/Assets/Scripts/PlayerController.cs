@@ -24,9 +24,8 @@ public class PlayerController : MonoBehaviour
         if (viewPos.x > 0 && viewPos.x <= 1 && viewPos.y >= 0 && viewPos.y <= 1 && viewPos.z > 0)
         {
             //Player is visible.
-            float h = Input.GetAxisRaw("Horizontal");
-            Vector3 movement = new Vector3(h, rb.velocity.y, rb.velocity.z);
-            rb.AddForce(movement * playerSpeed);
+            float h = Input.GetAxisRaw("Horizontal") * Time.deltaTime * playerSpeed;
+            rb.MovePosition(rb.position + Vector3.right * h);
 //            rb.velocity = new Vector3(h * playerSpeed, rb.velocity.y, rb.velocity.z) * Time.deltaTime;
         }
         else
