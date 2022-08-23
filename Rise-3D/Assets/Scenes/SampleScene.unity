@@ -1076,7 +1076,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isAlive: 1
   isGameStarted: 0
-  playerSpeed: 7
+  playerSpeed: 9
   scoreText: {fileID: 1085743719}
   highscoreText: {fileID: 1243668098}
   panel: {fileID: 841399796}

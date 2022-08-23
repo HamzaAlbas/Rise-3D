@@ -84,8 +84,13 @@ public class PlayerController : MonoBehaviour
         Time.fixedDeltaTime = Time.fixedDeltaTime / 10f;
 
         isAlive = false;
-        PlayerPrefs.SetString(highScoreKey, score.ToString("F0"));
-        PlayerPrefs.Save();
+
+        if (int.Parse(PlayerPrefs.GetString(highScoreKey)) < score)
+        {
+            PlayerPrefs.SetString(highScoreKey, score.ToString("F0"));
+            PlayerPrefs.Save();
+        }
+        
         yield return new WaitForSeconds(1f / 10f);
 
         Time.timeScale = 1f;
