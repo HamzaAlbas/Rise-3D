@@ -1,26 +1,26 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlatformSpawner : MonoBehaviour
 {
     public float timeBetweenWaves = 1f;
+    private float timeToSpawn = 2f;
     [SerializeField] private GameObject platformPrefab;
     public RectTransform[] objects;
 
-    private void Start()
+
+    private void Update()
     {
-        StartCoroutine(CubeSpawnCoroutine()); 
+        if (PlayerController.Instance.isGameStarted)
+        {
+            if (Time.time >= timeToSpawn)
+            {
+                SpawnCube();
+                timeToSpawn = Time.time + timeBetweenWaves;
+            }
+        } 
     }
 
-    IEnumerator CubeSpawnCoroutine()
-    {
-        while (true)
-        {
-            SpawnCube();
-            yield return new WaitForSeconds(timeBetweenWaves);
-        }
-    }
 
     public void SpawnCube()
     {
