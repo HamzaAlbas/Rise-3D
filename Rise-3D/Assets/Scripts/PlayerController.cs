@@ -1,25 +1,31 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class PlayerController : MonoBehaviour
 {
     Camera cam;
-    [HideInInspector] public bool isAlive = true;
+    [HideInInspector] public bool isAlive;
     [SerializeField] private float playerSpeed = 5f;
     private Rigidbody rb;
+    private int score;
+    public TMP_Text scoreText;
 
     private void Awake()
     {
         Application.targetFrameRate = 60;
         Time.timeScale = 1f;
         Time.fixedDeltaTime = 0.02f;
+        isAlive = true;
+        score = 0;
     }
 
     private void Start()
     {
         cam = Camera.main;
         rb = GetComponent<Rigidbody>();
+        StartCoroutine(ScoreCoroutine(1f, 1));
     }
 
     private void Update()
@@ -59,11 +65,22 @@ public class PlayerController : MonoBehaviour
         Time.timeScale = 1f / 10f;
         Time.fixedDeltaTime = Time.fixedDeltaTime / 10f;
 
+        isAlive = false;
         yield return new WaitForSeconds(1f / 10f);
 
         Time.timeScale = 1f;
         Time.fixedDeltaTime = Time.fixedDeltaTime / 10f;
 
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    IEnumerator ScoreCoroutine(float time, int amount)
+    {
+        while (isAlive)
+        {
+            score += amount;
+            scoreText.text = score.ToString();
+            yield return new WaitForSeconds(time);
+        }
     }
 }
