@@ -5,30 +5,48 @@ using TMPro;
 
 public class PlayerController : MonoBehaviour
 {
+    public static PlayerController Instance { get; set; }
     Camera cam;
     [HideInInspector] public bool isAlive;
+    [HideInInspector] public bool isGameStarted;
     [SerializeField] private float playerSpeed = 5f;
     private Rigidbody rb;
-    private int score;
-    public TMP_Text scoreText;
+    private float score;
+    public TMP_Text scoreText, highscoreText;
+    public GameObject panel, platformSpawner;
+    private string highScoreKey = "HighScore";
 
     private void Awake()
     {
+        Instance = this;
         Application.targetFrameRate = 60;
         Time.timeScale = 1f;
         Time.fixedDeltaTime = 0.02f;
         isAlive = true;
         score = 0;
+        isGameStarted = false;
     }
 
     private void Start()
     {
         cam = Camera.main;
         rb = GetComponent<Rigidbody>();
-        StartCoroutine(ScoreCoroutine(1f, 1));
+        highScoreKey = PlayerPrefs.GetString(highScoreKey, "0");
+        highscoreText.text = PlayerPrefs.GetString(highScoreKey, "0");
+
     }
 
     private void Update()
+    {
+        if (isGameStarted && isAlive)
+        {
+            PlayerControls();
+            score += Time.deltaTime;
+            scoreText.text = score.ToString("F0");
+        }
+    }
+
+    private void PlayerControls()
     {
         Vector3 viewPos = cam.WorldToViewportPoint(transform.position);
         if (viewPos.x > 0 && viewPos.x <= 1 && viewPos.y >= 0 && viewPos.y <= 1 && viewPos.z > 0)
@@ -66,6 +84,8 @@ public class PlayerController : MonoBehaviour
         Time.fixedDeltaTime = Time.fixedDeltaTime / 10f;
 
         isAlive = false;
+        PlayerPrefs.SetString(highScoreKey, score.ToString("F0"));
+        PlayerPrefs.Save();
         yield return new WaitForSeconds(1f / 10f);
 
         Time.timeScale = 1f;
@@ -74,13 +94,9 @@ public class PlayerController : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
-    IEnumerator ScoreCoroutine(float time, int amount)
+    public void StartGame()
     {
-        while (isAlive)
-        {
-            score += amount;
-            scoreText.text = score.ToString();
-            yield return new WaitForSeconds(time);
-        }
+        isGameStarted = true;
+        panel.SetActive(false);
     }
 }
