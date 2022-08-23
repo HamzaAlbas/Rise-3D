@@ -5,6 +5,7 @@ public class PlayerController : MonoBehaviour
     Camera cam;
     [HideInInspector] public bool isAlive = true;
     [SerializeField] private float playerSpeed = 5f;
+    private Rigidbody rb;
 
     private void Awake()
     {
@@ -14,6 +15,7 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         cam = Camera.main;
+        rb = GetComponent<Rigidbody>();
     }
 
     private void Update()
@@ -23,7 +25,9 @@ public class PlayerController : MonoBehaviour
         {
             //Player is visible.
             float h = Input.GetAxisRaw("Horizontal");
-            GetComponent<Rigidbody>().velocity = new Vector3(h, 0, 0) * playerSpeed;
+            Vector3 movement = new Vector3(h, rb.velocity.y, rb.velocity.z);
+            rb.AddForce(movement * playerSpeed);
+//            rb.velocity = new Vector3(h * playerSpeed, rb.velocity.y, rb.velocity.z) * Time.deltaTime;
         }
         else
         {
