@@ -1,4 +1,6 @@
 using UnityEngine;
+using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -10,6 +12,8 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         Application.targetFrameRate = 60;
+        Time.timeScale = 1f;
+        Time.fixedDeltaTime = 0.02f;
     }
 
     private void Start()
@@ -24,9 +28,8 @@ public class PlayerController : MonoBehaviour
         if (viewPos.x > 0 && viewPos.x <= 1 && viewPos.y >= 0 && viewPos.y <= 1 && viewPos.z > 0)
         {
             //Player is visible.
-            float h = Input.GetAxisRaw("Horizontal") * Time.deltaTime * playerSpeed;
+            float h = Input.GetAxisRaw("Horizontal") * Time.fixedDeltaTime * playerSpeed;
             rb.MovePosition(rb.position + Vector3.right * h);
-//            rb.velocity = new Vector3(h * playerSpeed, rb.velocity.y, rb.velocity.z) * Time.deltaTime;
         }
         else
         {
@@ -41,5 +44,26 @@ public class PlayerController : MonoBehaviour
                 transform.position += new Vector3(0.1f, 0, 0);
             }
         }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Platform"))
+        {
+            StartCoroutine(GameOver());
+        }
+    }
+
+    IEnumerator GameOver()
+    {
+        Time.timeScale = 1f / 10f;
+        Time.fixedDeltaTime = Time.fixedDeltaTime / 10f;
+
+        yield return new WaitForSeconds(1f / 10f);
+
+        Time.timeScale = 1f;
+        Time.fixedDeltaTime = Time.fixedDeltaTime / 10f;
+
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }
