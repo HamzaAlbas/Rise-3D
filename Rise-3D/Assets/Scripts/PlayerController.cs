@@ -53,8 +53,17 @@ public class PlayerController : MonoBehaviour
         if (viewPos.x > 0 && viewPos.x <= 1 && viewPos.y >= 0 && viewPos.y <= 1 && viewPos.z > 0)
         {
             //Player is visible.
-            float h = Input.GetAxisRaw("Horizontal") * Time.fixedDeltaTime * playerSpeed;
-            rb.MovePosition(rb.position + Vector3.right * h);
+//            float h = Input.GetAxisRaw("Horizontal") * Time.fixedDeltaTime * playerSpeed;
+            if (RightButtonHandler.Instance.rightButtonDown)
+            {
+                float r = 1 * Time.fixedDeltaTime * playerSpeed;
+                rb.MovePosition(rb.position + Vector3.right * r);
+            }
+            if (LeftButtonHandler.Instance.leftButtonDown)
+            {
+                float l = -1 * Time.fixedDeltaTime * playerSpeed;
+                rb.MovePosition(rb.position + Vector3.right * l);
+            }
         }
         else
         {
@@ -108,5 +117,15 @@ public class PlayerController : MonoBehaviour
             PlayerPrefs.SetInt("HighScore", highScore);
             highscoreText.text = PlayerPrefs.GetInt("HighScore").ToString();
         }
+    }
+
+    public void GoLeft()
+    {
+
+    }
+
+    public void GoRight()
+    {
+
     }
 }
