@@ -11,10 +11,12 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public bool isGameStarted;
     [SerializeField] private float playerSpeed = 5f;
     private Rigidbody rb;
-    private float score;
+    private float fScore;
+    private int iScore;
     public TMP_Text scoreText, highscoreText;
     public GameObject panel, platformSpawner;
-    private string highScoreKey = "HighScore";
+    private int highScore;
+
 
     private void Awake()
     {
@@ -23,7 +25,7 @@ public class PlayerController : MonoBehaviour
         Time.timeScale = 1f;
         Time.fixedDeltaTime = 0.02f;
         isAlive = true;
-        score = 0;
+        iScore = 0;
         isGameStarted = false;
     }
 
@@ -31,9 +33,7 @@ public class PlayerController : MonoBehaviour
     {
         cam = Camera.main;
         rb = GetComponent<Rigidbody>();
-        highScoreKey = PlayerPrefs.GetString(highScoreKey, "0");
-        highscoreText.text = PlayerPrefs.GetString(highScoreKey, "0");
-
+        highscoreText.text = PlayerPrefs.GetInt("HighScore").ToString();
     }
 
     private void Update()
@@ -41,8 +41,9 @@ public class PlayerController : MonoBehaviour
         if (isGameStarted && isAlive)
         {
             PlayerControls();
-            score += Time.deltaTime;
-            scoreText.text = score.ToString("F0");
+            fScore += Time.deltaTime;
+            iScore = Mathf.RoundToInt(fScore);
+            scoreText.text = iScore.ToString();
         }
     }
 
@@ -84,13 +85,7 @@ public class PlayerController : MonoBehaviour
         Time.fixedDeltaTime = Time.fixedDeltaTime / 10f;
 
         isAlive = false;
-
-        if (int.Parse(PlayerPrefs.GetString(highScoreKey)) < score)
-        {
-            PlayerPrefs.SetString(highScoreKey, score.ToString("F0"));
-            PlayerPrefs.Save();
-        }
-        
+        HighScoreSet();
         yield return new WaitForSeconds(1f / 10f);
 
         Time.timeScale = 1f;
@@ -103,5 +98,15 @@ public class PlayerController : MonoBehaviour
     {
         isGameStarted = true;
         panel.SetActive(false);
+    }
+
+    private void HighScoreSet()
+    {
+        if (iScore > PlayerPrefs.GetInt("HighScore"))
+        {
+            highScore = iScore;
+            PlayerPrefs.SetInt("HighScore", highScore);
+            highscoreText.text = PlayerPrefs.GetInt("HighScore").ToString();
+        }
     }
 }
